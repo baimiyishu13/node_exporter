@@ -1,0 +1,11 @@
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+Type=simple
+ExecStart={{ node_exporter_install_dir }}/node_exporter --web.listen-address=0.0.0.0:{{ port }}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

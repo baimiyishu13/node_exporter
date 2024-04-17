@@ -1,0 +1,26 @@
+---
+- name: Download node Exporter binary
+  get_url:
+    url: "{{ node_exporter_download_url }}"
+    dest: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+  register: download
+  changed_when: download is changed
+
+- name: Extract node Exporter binary
+  unarchive:
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: "{{ node_exporter_install_dir }}"
+    remote_src: yes
+    creates: "{{ node_exporter_install_dir }}/node_exporter-{{ node_exporter_version }}"
+
+- name: Create node Exporter service file
+  template:
+    src: node_exporter.service.j2
+    dest: "{{ node_exporter_service_file }}"
+  notify: restart node exporter
+
+- name: Enable and start node Exporter service
+  systemd:
+    name: node_exporter
+    enabled: yes
+    state: started
