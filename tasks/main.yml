@@ -9,9 +9,14 @@
 - name: Extract node Exporter binary
   unarchive:
     src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
-    dest: "{{ node_exporter_install_dir }}"
+    dest: "/tmp"
     remote_src: yes
-    creates: "{{ node_exporter_install_dir }}/node_exporter-{{ node_exporter_version }}"
+    creates: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64"
+
+- name: Move node Exporter binary to /usr/local/bin
+  command:
+    cmd: mv "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter" /usr/local/bin/
+    removes: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
 
 - name: Create node Exporter service file
   template:
